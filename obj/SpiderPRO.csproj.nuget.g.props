@@ -12,4 +12,10 @@
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <SourceRoot Include="C:\Users\dalbxxx\.nuget\packages\" />
   </ItemGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)obfuscar\2.2.50\build\obfuscar.props" Condition="Exists('$(NuGetPackageRoot)obfuscar\2.2.50\build\obfuscar.props')" />
+  </ImportGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgObfuscar Condition=" '$(PkgObfuscar)' == '' ">C:\Users\dalbxxx\.nuget\packages\obfuscar\2.2.50</PkgObfuscar>
+  </PropertyGroup>
 </Project>

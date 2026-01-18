@@ -277,7 +277,7 @@ public class Form1 : Form
         try
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            string text = "1.0.1";
+            string text = "1.0.2";
             string text2 = "http://bobik.atwebpages.com/version.php";
             using (WebClient webClient = new WebClient())
             {
@@ -894,8 +894,9 @@ public class Form1 : Form
 			{ "iPad17,1", "iPad Pro 11-inch (M5, WiFi)" },
 			{ "iPad17,2", "iPad Pro 11-inch (M5, Cellular)" },
 			{ "iPad17,3", "iPad Pro 13-inch (M5, WiFi)" },
-			{ "iPad17,4", "iPad Pro 13-inch (M5, Cellular)" }
-		}.TryGetValue(currentProductType, out var modelName))
+			{ "iPad17,4", "iPad Pro 13-inch (M5, Cellular)" },
+            { "iPod5,1", "iPod Touch 5 Generation" }
+        }.TryGetValue(currentProductType, out var modelName))
 		{
 			ModeloffHello.Text = modelName;
 		}
@@ -1005,41 +1006,55 @@ public class Form1 : Form
 		});
 	}
 
-	private async Task LoadImageWithZoomAsync(float zoomFactor)
-	{
-		if (string.IsNullOrEmpty(currentProductType))
-		{
-			return;
-		}
-		string typeIMG = (currentProductType.Contains("iPad") ? "iPad" : "iPhone");
-		string imageUrl = "https://statici.icloud.com/fmipmobile/deviceImages-9.0/" + typeIMG + "/" + currentProductType + "/online-infobox__3x.png";
-		try
-		{
-			AddLog("Loading device image: " + typeIMG + " - " + currentProductType, Color.Blue);
-			HttpClient httpClient = new HttpClient();
-			try
-			{
-				using MemoryStream stream = new MemoryStream(await httpClient.GetByteArrayAsync(imageUrl));
-				Image image = Image.FromStream(stream);
-				Invoke((Action)delegate
-				{
-					pictureBoxModel.SizeMode = PictureBoxSizeMode.StretchImage;
-					pictureBoxModel.Image = new Bitmap(image);
-				});
-			}
-			finally
-			{
-				((IDisposable)httpClient)?.Dispose();
-			}
-			AddLog("Device image loaded successfully", Color.Green);
-		}
-		catch (Exception ex)
-		{
-			AddLog("Failed to load device image: " + ex.Message, Color.Orange);
-		}
-	}
+    private async Task LoadImageWithZoomAsync(float zoomFactor)
+    {
+        if (string.IsNullOrEmpty(currentProductType)) return;
 
-	private static async Task<string> ShellCMDAsync(string command, string arguments)
+        // 1. Форматируем название: iPhone7,2 -> iPhone7.2
+        string formattedProductType = currentProductType.Replace(",", ".");
+
+        // 2. Логика папок (iPad, iPod, iPhone)
+        string typeIMG = "iPhone";
+        if (formattedProductType.Contains("iPad")) typeIMG = "iPad";
+        else if (formattedProductType.Contains("iPod")) typeIMG = "iPod";
+
+       
+        string imageUrl = $"https://github.com/bablaerrr/iphoneimages/blob/main/{typeIMG}/{formattedProductType}/device.png?raw=true";
+
+        try
+        {
+            AddLog($"Загрузка: {imageUrl}", Color.Blue);
+
+            using (HttpClient httpClient = new HttpClient())
+            {
+                // Маскировка под браузер (обязательно для бесплатных хостингов)
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+
+                // Получаем данные
+                byte[] imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
+
+                using (MemoryStream stream = new MemoryStream(imageBytes))
+                {
+                    Image downloadedImage = Image.FromStream(stream);
+
+                    Invoke((Action)delegate
+                    {
+                        pictureBoxModel.Image?.Dispose(); // Очистка памяти
+                        pictureBoxModel.SizeMode = PictureBoxSizeMode.Zoom;
+                        pictureBoxModel.Image = new Bitmap(downloadedImage);
+                    });
+                }
+            }
+            AddLog("Изображение загружено", Color.Green);
+        }
+        catch (Exception ex)
+        {
+            // Если будет ошибка 404, значит путь к файлу на сервере не совпадает
+            AddLog($"Ошибка загрузки: {ex.Message}", Color.Orange);
+        }
+    }
+
+    private static async Task<string> ShellCMDAsync(string command, string arguments)
 	{
 		using Process process = new Process();
 		ProcessStartInfo processStartInfo = new ProcessStartInfo(command)
@@ -1111,7 +1126,7 @@ public class Form1 : Form
         ActivateButton.Enabled = true;
 
         UpdateUIProgress(100, "", "Congratulations your device is supported!");
-        Form2.Show("BobikA5", "Congratulations your device is supported for A5 Activation. Make sure its connected to wifi. Click the button 'Activate Your Device' to activate your device");
+        Form2.Show("BobikA5", "Congratulations your device is supported for A5 Activation. MAKE SURE YOU CONECTED TO WIFI ON DEVICE. Click the button 'Activate Your Device' to activate your device");
     }
 
     private async void ActivateButton_Click(object sender, EventArgs e)
@@ -1259,7 +1274,7 @@ public class Form1 : Form
                 return;
             }
         }
-        UpdateUIProgress(0, "", "[deviceMobileGestaltAsync] Failed to activate your device, please retry the process..");
+        UpdateUIProgress(0, "", "[Gestalt] Failed activate, please connect to wifi on device and try again or use different ios version");
         await SendReport("[L] FAILED BYPASSED A5 ❌");
     }
 
@@ -1589,460 +1604,465 @@ public class Form1 : Form
 
     private void InitializeComponent()
     {
-        this.components = new System.ComponentModel.Container();
-        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-        this.labelType = new System.Windows.Forms.Label();
-        this.labelVersion = new System.Windows.Forms.Label();
-        this.labelSN = new System.Windows.Forms.Label();
-        this.ModeloffHello = new System.Windows.Forms.Label();
-        this.label15 = new System.Windows.Forms.Label();
-        this.label16 = new System.Windows.Forms.Label();
-        this.label20 = new System.Windows.Forms.Label();
-        this.label23 = new System.Windows.Forms.Label();
-        this.guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
-        this.Status = new System.Windows.Forms.Label();
-        this.labelActivaction = new System.Windows.Forms.Label();
-        this.pictureBoxModel = new System.Windows.Forms.PictureBox();
-        this.pictureBoxDC = new System.Windows.Forms.PictureBox();
-        this.labelInfoProgres = new System.Windows.Forms.Label();
-        this.Guna2ProgressBar1 = new Guna.UI2.WinForms.Guna2ProgressBar();
-        this.ActivateButton = new Guna.UI2.WinForms.Guna2GradientButton();
-        this.label2 = new System.Windows.Forms.Label();
-        this.labelIMEI = new System.Windows.Forms.Label();
-        this.LogsBox = new Guna.UI2.WinForms.Guna2TextBox();
-        this.labelECID = new System.Windows.Forms.Label();
-        this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
-        this.guna2CircleButton5 = new Guna.UI2.WinForms.Guna2CircleButton();
-        this.label8 = new System.Windows.Forms.Label();
-        this.guna2CircleButton3 = new Guna.UI2.WinForms.Guna2CircleButton();
-        this.labeludidsn = new System.Windows.Forms.Label();
-        this.labelimeimeid = new System.Windows.Forms.Label();
-        this.labelptios = new System.Windows.Forms.Label();
-        this.labeluuid = new System.Windows.Forms.Label();
-        this.guna2GradientButton3 = new Guna.UI2.WinForms.Guna2GradientButton();
-        ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).BeginInit();
-        this.guna2Panel1.SuspendLayout();
-        this.SuspendLayout();
-        // 
-        // labelType
-        // 
-        this.labelType.AutoSize = true;
-        this.labelType.BackColor = System.Drawing.Color.Transparent;
-        this.labelType.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-        this.labelType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
-        this.labelType.Location = new System.Drawing.Point(1105, 76);
-        this.labelType.Name = "labelType";
-        this.labelType.Size = new System.Drawing.Size(29, 15);
-        this.labelType.TabIndex = 754;
-        this.labelType.Text = "N/A";
-        // 
-        // labelVersion
-        // 
-        this.labelVersion.AutoSize = true;
-        this.labelVersion.BackColor = System.Drawing.Color.Transparent;
-        this.labelVersion.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-        this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
-        this.labelVersion.Location = new System.Drawing.Point(1104, 138);
-        this.labelVersion.Name = "labelVersion";
-        this.labelVersion.Size = new System.Drawing.Size(29, 15);
-        this.labelVersion.TabIndex = 753;
-        this.labelVersion.Text = "N/A";
-        // 
-        // labelSN
-        // 
-        this.labelSN.AutoSize = true;
-        this.labelSN.BackColor = System.Drawing.Color.Transparent;
-        this.labelSN.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.labelSN.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(159)))), ((int)(((byte)(10)))));
-        this.labelSN.Location = new System.Drawing.Point(1104, 108);
-        this.labelSN.Name = "labelSN";
-        this.labelSN.Size = new System.Drawing.Size(29, 15);
-        this.labelSN.TabIndex = 751;
-        this.labelSN.Text = "N/A";
-        // 
-        // ModeloffHello
-        // 
-        this.ModeloffHello.AutoSize = true;
-        this.ModeloffHello.BackColor = System.Drawing.Color.Transparent;
-        this.ModeloffHello.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-        this.ModeloffHello.ForeColor = System.Drawing.Color.White;
-        this.ModeloffHello.Location = new System.Drawing.Point(1104, 45);
-        this.ModeloffHello.Name = "ModeloffHello";
-        this.ModeloffHello.Size = new System.Drawing.Size(29, 15);
-        this.ModeloffHello.TabIndex = 749;
-        this.ModeloffHello.Text = "N/A";
-        // 
-        // label15
-        // 
-        this.label15.AutoSize = true;
-        this.label15.BackColor = System.Drawing.Color.Transparent;
-        this.label15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.label15.ForeColor = System.Drawing.Color.White;
-        this.label15.Location = new System.Drawing.Point(1030, 138);
-        this.label15.Name = "label15";
-        this.label15.Size = new System.Drawing.Size(26, 15);
-        this.label15.TabIndex = 748;
-        this.label15.Text = "iOS";
-        // 
-        // label16
-        // 
-        this.label16.AutoSize = true;
-        this.label16.BackColor = System.Drawing.Color.Transparent;
-        this.label16.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.label16.ForeColor = System.Drawing.Color.White;
-        this.label16.Location = new System.Drawing.Point(1030, 76);
-        this.label16.Name = "label16";
-        this.label16.Size = new System.Drawing.Size(80, 15);
-        this.label16.TabIndex = 747;
-        this.label16.Text = "ProductType ";
-        // 
-        // label20
-        // 
-        this.label20.AutoSize = true;
-        this.label20.BackColor = System.Drawing.Color.Transparent;
-        this.label20.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.label20.ForeColor = System.Drawing.Color.White;
-        this.label20.Location = new System.Drawing.Point(1030, 108);
-        this.label20.Name = "label20";
-        this.label20.Size = new System.Drawing.Size(38, 15);
-        this.label20.TabIndex = 744;
-        this.label20.Text = "Serial";
-        // 
-        // label23
-        // 
-        this.label23.AutoSize = true;
-        this.label23.BackColor = System.Drawing.Color.Transparent;
-        this.label23.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.label23.ForeColor = System.Drawing.Color.White;
-        this.label23.Location = new System.Drawing.Point(1030, 45);
-        this.label23.Name = "label23";
-        this.label23.Size = new System.Drawing.Size(42, 15);
-        this.label23.TabIndex = 743;
-        this.label23.Text = "Model";
-        // 
-        // guna2Elipse1
-        // 
-        this.guna2Elipse1.BorderRadius = 22;
-        this.guna2Elipse1.TargetControl = this;
-        // 
-        // Status
-        // 
-        this.Status.AutoSize = true;
-        this.Status.BackColor = System.Drawing.Color.Transparent;
-        this.Status.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.Status.ForeColor = System.Drawing.Color.White;
-        this.Status.Location = new System.Drawing.Point(1030, 200);
-        this.Status.Name = "Status";
-        this.Status.Size = new System.Drawing.Size(42, 15);
-        this.Status.TabIndex = 817;
-        this.Status.Text = "Status";
-        // 
-        // labelActivaction
-        // 
-        this.labelActivaction.AutoSize = true;
-        this.labelActivaction.BackColor = System.Drawing.Color.Transparent;
-        this.labelActivaction.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-        this.labelActivaction.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-        this.labelActivaction.Location = new System.Drawing.Point(1104, 200);
-        this.labelActivaction.Name = "labelActivaction";
-        this.labelActivaction.Size = new System.Drawing.Size(29, 15);
-        this.labelActivaction.TabIndex = 818;
-        this.labelActivaction.Text = "N/A";
-        // 
-        // pictureBoxModel
-        // 
-        this.pictureBoxModel.BackColor = System.Drawing.Color.Transparent;
-        this.pictureBoxModel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        this.pictureBoxModel.Location = new System.Drawing.Point(-42, 45);
-        this.pictureBoxModel.Name = "pictureBoxModel";
-        this.pictureBoxModel.Size = new System.Drawing.Size(456, 338);
-        this.pictureBoxModel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-        this.pictureBoxModel.TabIndex = 674;
-        this.pictureBoxModel.TabStop = false;
-        this.pictureBoxModel.Click += new System.EventHandler(this.pictureBoxModel_Click);
-        // 
-        // pictureBoxDC
-        // 
-        this.pictureBoxDC.BackColor = System.Drawing.Color.Transparent;
-        this.pictureBoxDC.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        this.pictureBoxDC.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxDC.Image")));
-        this.pictureBoxDC.Location = new System.Drawing.Point(-5, 45);
-        this.pictureBoxDC.Name = "pictureBoxDC";
-        this.pictureBoxDC.Size = new System.Drawing.Size(284, 338);
-        this.pictureBoxDC.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-        this.pictureBoxDC.TabIndex = 777;
-        this.pictureBoxDC.TabStop = false;
-        // 
-        // labelInfoProgres
-        // 
-        this.labelInfoProgres.BackColor = System.Drawing.Color.Transparent;
-        this.labelInfoProgres.Font = new System.Drawing.Font("Segoe UI Semibold", 8.5F, System.Drawing.FontStyle.Bold);
-        this.labelInfoProgres.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
-        this.labelInfoProgres.Location = new System.Drawing.Point(302, 285);
-        this.labelInfoProgres.Name = "labelInfoProgres";
-        this.labelInfoProgres.Size = new System.Drawing.Size(355, 18);
-        this.labelInfoProgres.TabIndex = 811;
-        this.labelInfoProgres.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        // 
-        // Guna2ProgressBar1
-        // 
-        this.Guna2ProgressBar1.BackColor = System.Drawing.Color.Transparent;
-        this.Guna2ProgressBar1.BorderColor = System.Drawing.Color.Transparent;
-        this.Guna2ProgressBar1.BorderRadius = 4;
-        this.Guna2ProgressBar1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(42)))));
-        this.Guna2ProgressBar1.ForeColor = System.Drawing.Color.Transparent;
-        this.Guna2ProgressBar1.Location = new System.Drawing.Point(331, 331);
-        this.Guna2ProgressBar1.Minimum = 10;
-        this.Guna2ProgressBar1.Name = "Guna2ProgressBar1";
-        this.Guna2ProgressBar1.ProgressBrushMode = Guna.UI2.WinForms.Enums.BrushMode.Solid;
-        this.Guna2ProgressBar1.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-        this.Guna2ProgressBar1.ProgressColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(210)))), ((int)(((byte)(255)))));
-        this.Guna2ProgressBar1.ShadowDecoration.Enabled = false;
-        this.Guna2ProgressBar1.Size = new System.Drawing.Size(372, 8);
-        this.Guna2ProgressBar1.TabIndex = 816;
-        this.Guna2ProgressBar1.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
-        this.Guna2ProgressBar1.Value = 100;
-        // 
-        // ActivateButton
-        // 
-        this.ActivateButton.Animated = true;
-        this.ActivateButton.BackColor = System.Drawing.Color.Transparent;
-        this.ActivateButton.BorderColor = System.Drawing.Color.Transparent;
-        this.ActivateButton.BorderRadius = 10;
-        this.ActivateButton.Cursor = System.Windows.Forms.Cursors.Hand;
-        this.ActivateButton.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-        this.ActivateButton.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-        this.ActivateButton.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-        this.ActivateButton.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-        this.ActivateButton.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-        this.ActivateButton.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-        this.ActivateButton.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(100)))), ((int)(((byte)(210)))));
-        this.ActivateButton.Font = new System.Drawing.Font("Segoe UI Bold", 9.75F);
-        this.ActivateButton.ForeColor = System.Drawing.Color.White;
-        this.ActivateButton.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
-        this.ActivateButton.IndicateFocus = true;
-        this.ActivateButton.Location = new System.Drawing.Point(331, 347);
-        this.ActivateButton.Name = "ActivateButton";
-        this.ActivateButton.ShadowDecoration.Enabled = false;
-        this.ActivateButton.Size = new System.Drawing.Size(371, 32);
-        this.ActivateButton.TabIndex = 817;
-        this.ActivateButton.Text = "Activate Your Device";
-        this.ActivateButton.UseTransparentBackground = true;
-        this.ActivateButton.Click += new System.EventHandler(this.ActivateButton_Click);
-        // 
-        // label2
-        // 
-        this.label2.AutoSize = true;
-        this.label2.BackColor = System.Drawing.Color.Transparent;
-        this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.label2.ForeColor = System.Drawing.Color.White;
-        this.label2.Location = new System.Drawing.Point(1030, 170);
-        this.label2.Name = "label2";
-        this.label2.Size = new System.Drawing.Size(32, 15);
-        this.label2.TabIndex = 821;
-        this.label2.Text = "IMEI";
-        // 
-        // labelIMEI
-        // 
-        this.labelIMEI.AutoSize = true;
-        this.labelIMEI.BackColor = System.Drawing.Color.Transparent;
-        this.labelIMEI.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-        this.labelIMEI.ForeColor = System.Drawing.Color.White;
-        this.labelIMEI.Location = new System.Drawing.Point(1105, 170);
-        this.labelIMEI.Name = "labelIMEI";
-        this.labelIMEI.Size = new System.Drawing.Size(29, 15);
-        this.labelIMEI.TabIndex = 825;
-        this.labelIMEI.Text = "N/A";
-        // 
-        // LogsBox
-        // 
-        this.LogsBox.BackColor = System.Drawing.Color.Transparent;
-        this.LogsBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(52)))));
-        this.LogsBox.BorderRadius = 12;
-        this.LogsBox.BorderThickness = 1;
-        this.LogsBox.Cursor = System.Windows.Forms.Cursors.IBeam;
-        this.LogsBox.DefaultText = "";
-        this.LogsBox.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(20)))));
-        this.LogsBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-        this.LogsBox.Font = new System.Drawing.Font("Consolas", 9F);
-        this.LogsBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(209)))), ((int)(((byte)(88)))));
-        this.LogsBox.Location = new System.Drawing.Point(1183, 20);
-        this.LogsBox.Multiline = true;
-        this.LogsBox.Name = "LogsBox";
-        this.LogsBox.ReadOnly = true;
-        this.LogsBox.Size = new System.Drawing.Size(8, 8);
-        this.LogsBox.TabIndex = 827;
-        // 
-        // labelECID
-        // 
-        this.labelECID.AutoSize = true;
-        this.labelECID.BackColor = System.Drawing.Color.Transparent;
-        this.labelECID.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
-        this.labelECID.ForeColor = System.Drawing.Color.White;
-        this.labelECID.Location = new System.Drawing.Point(1030, 231);
-        this.labelECID.Name = "labelECID";
-        this.labelECID.Size = new System.Drawing.Size(29, 15);
-        this.labelECID.TabIndex = 829;
-        this.labelECID.Text = "N/A";
-        // 
-        // guna2Panel1
-        // 
-        this.guna2Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(32)))));
-        this.guna2Panel1.Controls.Add(this.guna2CircleButton5);
-        this.guna2Panel1.Controls.Add(this.label8);
-        this.guna2Panel1.Controls.Add(this.guna2CircleButton3);
-        this.guna2Panel1.Location = new System.Drawing.Point(-5, 1);
-        this.guna2Panel1.Name = "guna2Panel1";
-        this.guna2Panel1.Size = new System.Drawing.Size(722, 38);
-        this.guna2Panel1.TabIndex = 836;
-        // 
-        // guna2CircleButton5
-        // 
-        this.guna2CircleButton5.Cursor = System.Windows.Forms.Cursors.Hand;
-        this.guna2CircleButton5.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(194)))), ((int)(((byte)(11)))));
-        this.guna2CircleButton5.Location = new System.Drawing.Point(671, 11);
-        this.guna2CircleButton5.Name = "guna2CircleButton5";
-        this.guna2CircleButton5.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-        this.guna2CircleButton5.Size = new System.Drawing.Size(13, 13);
-        this.guna2CircleButton5.TabIndex = 834;
-        this.guna2CircleButton5.Click += new System.EventHandler(this.guna2CircleButton5_Click);
-        // 
-        // label8
-        // 
-        this.label8.BackColor = System.Drawing.Color.Transparent;
-        this.label8.Font = new System.Drawing.Font("Segoe UI Bold", 9.75F);
-        this.label8.ForeColor = System.Drawing.Color.White;
-        this.label8.Location = new System.Drawing.Point(172, 7);
-        this.label8.Name = "label8";
-        this.label8.Size = new System.Drawing.Size(343, 19);
-        this.label8.TabIndex = 721;
-        this.label8.Text = "BobikA5 v1.0";
-        this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        // 
-        // guna2CircleButton3
-        // 
-        this.guna2CircleButton3.Cursor = System.Windows.Forms.Cursors.Hand;
-        this.guna2CircleButton3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(0)))), ((int)(((byte)(59)))));
-        this.guna2CircleButton3.Location = new System.Drawing.Point(692, 11);
-        this.guna2CircleButton3.Name = "guna2CircleButton3";
-        this.guna2CircleButton3.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-        this.guna2CircleButton3.Size = new System.Drawing.Size(13, 13);
-        this.guna2CircleButton3.TabIndex = 6;
-        this.guna2CircleButton3.Click += new System.EventHandler(this.guna2CircleButton3_Click);
-        // 
-        // labeludidsn
-        // 
-        this.labeludidsn.BackColor = System.Drawing.Color.Transparent;
-        this.labeludidsn.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
-        this.labeludidsn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
-        this.labeludidsn.Location = new System.Drawing.Point(285, 242);
-        this.labeludidsn.Name = "labeludidsn";
-        this.labeludidsn.Size = new System.Drawing.Size(456, 19);
-        this.labeludidsn.TabIndex = 854;
-        this.labeludidsn.Text = "UDID - SN";
-        this.labeludidsn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        this.labeludidsn.Click += new System.EventHandler(this.labeludidsn_Click);
-        // 
-        // labelimeimeid
-        // 
-        this.labelimeimeid.BackColor = System.Drawing.Color.Transparent;
-        this.labelimeimeid.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
-        this.labelimeimeid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
-        this.labelimeimeid.Location = new System.Drawing.Point(289, 209);
-        this.labelimeimeid.Name = "labelimeimeid";
-        this.labelimeimeid.Size = new System.Drawing.Size(452, 19);
-        this.labelimeimeid.TabIndex = 853;
-        this.labelimeimeid.Text = "IMEI - MEID";
-        this.labelimeimeid.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        // 
-        // labelptios
-        // 
-        this.labelptios.BackColor = System.Drawing.Color.Transparent;
-        this.labelptios.Font = new System.Drawing.Font("Segoe UI Bold", 10F);
-        this.labelptios.ForeColor = System.Drawing.Color.White;
-        this.labelptios.Location = new System.Drawing.Point(293, 173);
-        this.labelptios.Name = "labelptios";
-        this.labelptios.Size = new System.Drawing.Size(448, 19);
-        this.labelptios.TabIndex = 855;
-        this.labelptios.Text = "There is not Device Connected";
-        this.labelptios.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        // 
-        // labeluuid
-        // 
-        this.labeluuid.BackColor = System.Drawing.Color.Transparent;
-        this.labeluuid.Font = new System.Drawing.Font("Segoe UI", 9F);
-        this.labeluuid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(72)))), ((int)(((byte)(74)))));
-        this.labeluuid.Location = new System.Drawing.Point(301, 90);
-        this.labeluuid.Name = "labeluuid";
-        this.labeluuid.Size = new System.Drawing.Size(452, 19);
-        this.labeluuid.TabIndex = 856;
-        this.labeluuid.Text = "APP UUID: ";
-        this.labeluuid.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        // 
-        // guna2GradientButton3
-        // 
-        this.guna2GradientButton3.Animated = true;
-        this.guna2GradientButton3.BackColor = System.Drawing.Color.Transparent;
-        this.guna2GradientButton3.BorderRadius = 10;
-        this.guna2GradientButton3.Cursor = System.Windows.Forms.Cursors.Hand;
-        this.guna2GradientButton3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(46)))));
-        this.guna2GradientButton3.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(30)))));
-        this.guna2GradientButton3.Font = new System.Drawing.Font("Segoe UI Bold", 9.75F);
-        this.guna2GradientButton3.ForeColor = System.Drawing.Color.White;
-        this.guna2GradientButton3.IndicateFocus = true;
-        this.guna2GradientButton3.Location = new System.Drawing.Point(331, 347);
-        this.guna2GradientButton3.Name = "guna2GradientButton3";
-        this.guna2GradientButton3.Size = new System.Drawing.Size(371, 32);
-        this.guna2GradientButton3.TabIndex = 858;
-        this.guna2GradientButton3.Text = "Check Device Compatibility";
-        this.guna2GradientButton3.UseTransparentBackground = true;
-        this.guna2GradientButton3.Click += new System.EventHandler(this.guna2GradientButton3_Click_1);
-        // 
-        // Form1
-        // 
-        this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
-        this.ClientSize = new System.Drawing.Size(717, 405);
-        this.Controls.Add(this.guna2GradientButton3);
-        this.Controls.Add(this.ActivateButton);
-        this.Controls.Add(this.Guna2ProgressBar1);
-        this.Controls.Add(this.labeludidsn);
-        this.Controls.Add(this.labelimeimeid);
-        this.Controls.Add(this.labelptios);
-        this.Controls.Add(this.labeluuid);
-        this.Controls.Add(this.guna2Panel1);
-        this.Controls.Add(this.pictureBoxModel);
-        this.Controls.Add(this.labelECID);
-        this.Controls.Add(this.LogsBox);
-        this.Controls.Add(this.labelIMEI);
-        this.Controls.Add(this.label2);
-        this.Controls.Add(this.labelActivaction);
-        this.Controls.Add(this.Status);
-        this.Controls.Add(this.label16);
-        this.Controls.Add(this.label15);
-        this.Controls.Add(this.labelVersion);
-        this.Controls.Add(this.label20);
-        this.Controls.Add(this.labelSN);
-        this.Controls.Add(this.ModeloffHello);
-        this.Controls.Add(this.labelType);
-        this.Controls.Add(this.labelInfoProgres);
-        this.Controls.Add(this.pictureBoxDC);
-        this.Controls.Add(this.label23);
-        this.DoubleBuffered = true;
-        this.ForeColor = System.Drawing.Color.White;
-        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-        this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-        this.Name = "Form1";
-        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-        this.Text = "BobikA5";
-        this.Load += new System.EventHandler(this.Form1_Load);
-        ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).EndInit();
-        this.guna2Panel1.ResumeLayout(false);
-        this.ResumeLayout(false);
-        this.PerformLayout();
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            this.labelType = new System.Windows.Forms.Label();
+            this.labelVersion = new System.Windows.Forms.Label();
+            this.labelSN = new System.Windows.Forms.Label();
+            this.ModeloffHello = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
+            this.Status = new System.Windows.Forms.Label();
+            this.labelActivaction = new System.Windows.Forms.Label();
+            this.pictureBoxModel = new System.Windows.Forms.PictureBox();
+            this.pictureBoxDC = new System.Windows.Forms.PictureBox();
+            this.labelInfoProgres = new System.Windows.Forms.Label();
+            this.Guna2ProgressBar1 = new Guna.UI2.WinForms.Guna2ProgressBar();
+            this.ActivateButton = new Guna.UI2.WinForms.Guna2GradientButton();
+            this.label2 = new System.Windows.Forms.Label();
+            this.labelIMEI = new System.Windows.Forms.Label();
+            this.LogsBox = new Guna.UI2.WinForms.Guna2TextBox();
+            this.labelECID = new System.Windows.Forms.Label();
+            this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2CircleButton5 = new Guna.UI2.WinForms.Guna2CircleButton();
+            this.label8 = new System.Windows.Forms.Label();
+            this.guna2CircleButton3 = new Guna.UI2.WinForms.Guna2CircleButton();
+            this.labeludidsn = new System.Windows.Forms.Label();
+            this.labelimeimeid = new System.Windows.Forms.Label();
+            this.labelptios = new System.Windows.Forms.Label();
+            this.labeluuid = new System.Windows.Forms.Label();
+            this.guna2GradientButton3 = new Guna.UI2.WinForms.Guna2GradientButton();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).BeginInit();
+            this.guna2Panel1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // labelType
+            // 
+            this.labelType.AutoSize = true;
+            this.labelType.BackColor = System.Drawing.Color.Transparent;
+            this.labelType.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.labelType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
+            this.labelType.Location = new System.Drawing.Point(1105, 76);
+            this.labelType.Name = "labelType";
+            this.labelType.Size = new System.Drawing.Size(29, 15);
+            this.labelType.TabIndex = 754;
+            this.labelType.Text = "N/A";
+            // 
+            // labelVersion
+            // 
+            this.labelVersion.AutoSize = true;
+            this.labelVersion.BackColor = System.Drawing.Color.Transparent;
+            this.labelVersion.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
+            this.labelVersion.Location = new System.Drawing.Point(1104, 138);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(29, 15);
+            this.labelVersion.TabIndex = 753;
+            this.labelVersion.Text = "N/A";
+            // 
+            // labelSN
+            // 
+            this.labelSN.AutoSize = true;
+            this.labelSN.BackColor = System.Drawing.Color.Transparent;
+            this.labelSN.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.labelSN.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(159)))), ((int)(((byte)(10)))));
+            this.labelSN.Location = new System.Drawing.Point(1104, 108);
+            this.labelSN.Name = "labelSN";
+            this.labelSN.Size = new System.Drawing.Size(29, 15);
+            this.labelSN.TabIndex = 751;
+            this.labelSN.Text = "N/A";
+            // 
+            // ModeloffHello
+            // 
+            this.ModeloffHello.AutoSize = true;
+            this.ModeloffHello.BackColor = System.Drawing.Color.Transparent;
+            this.ModeloffHello.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.ModeloffHello.ForeColor = System.Drawing.Color.White;
+            this.ModeloffHello.Location = new System.Drawing.Point(1104, 45);
+            this.ModeloffHello.Name = "ModeloffHello";
+            this.ModeloffHello.Size = new System.Drawing.Size(29, 15);
+            this.ModeloffHello.TabIndex = 749;
+            this.ModeloffHello.Text = "N/A";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.Color.Transparent;
+            this.label15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.label15.ForeColor = System.Drawing.Color.White;
+            this.label15.Location = new System.Drawing.Point(1030, 138);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(26, 15);
+            this.label15.TabIndex = 748;
+            this.label15.Text = "iOS";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.BackColor = System.Drawing.Color.Transparent;
+            this.label16.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.label16.ForeColor = System.Drawing.Color.White;
+            this.label16.Location = new System.Drawing.Point(1030, 76);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(80, 15);
+            this.label16.TabIndex = 747;
+            this.label16.Text = "ProductType ";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.BackColor = System.Drawing.Color.Transparent;
+            this.label20.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.label20.ForeColor = System.Drawing.Color.White;
+            this.label20.Location = new System.Drawing.Point(1030, 108);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(38, 15);
+            this.label20.TabIndex = 744;
+            this.label20.Text = "Serial";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.BackColor = System.Drawing.Color.Transparent;
+            this.label23.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.label23.ForeColor = System.Drawing.Color.White;
+            this.label23.Location = new System.Drawing.Point(1030, 45);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(42, 15);
+            this.label23.TabIndex = 743;
+            this.label23.Text = "Model";
+            // 
+            // guna2Elipse1
+            // 
+            this.guna2Elipse1.BorderRadius = 22;
+            this.guna2Elipse1.TargetControl = this;
+            // 
+            // Status
+            // 
+            this.Status.AutoSize = true;
+            this.Status.BackColor = System.Drawing.Color.Transparent;
+            this.Status.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.Status.ForeColor = System.Drawing.Color.White;
+            this.Status.Location = new System.Drawing.Point(1030, 200);
+            this.Status.Name = "Status";
+            this.Status.Size = new System.Drawing.Size(42, 15);
+            this.Status.TabIndex = 817;
+            this.Status.Text = "Status";
+            // 
+            // labelActivaction
+            // 
+            this.labelActivaction.AutoSize = true;
+            this.labelActivaction.BackColor = System.Drawing.Color.Transparent;
+            this.labelActivaction.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.labelActivaction.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.labelActivaction.Location = new System.Drawing.Point(1104, 200);
+            this.labelActivaction.Name = "labelActivaction";
+            this.labelActivaction.Size = new System.Drawing.Size(29, 15);
+            this.labelActivaction.TabIndex = 818;
+            this.labelActivaction.Text = "N/A";
+            // 
+            // pictureBoxModel
+            // 
+            this.pictureBoxModel.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBoxModel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBoxModel.Location = new System.Drawing.Point(-42, 45);
+            this.pictureBoxModel.Name = "pictureBoxModel";
+            this.pictureBoxModel.Size = new System.Drawing.Size(456, 338);
+            this.pictureBoxModel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxModel.TabIndex = 674;
+            this.pictureBoxModel.TabStop = false;
+            this.pictureBoxModel.Click += new System.EventHandler(this.pictureBoxModel_Click);
+            // 
+            // pictureBoxDC
+            // 
+            this.pictureBoxDC.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBoxDC.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBoxDC.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxDC.Image")));
+            this.pictureBoxDC.Location = new System.Drawing.Point(-5, 45);
+            this.pictureBoxDC.Name = "pictureBoxDC";
+            this.pictureBoxDC.Size = new System.Drawing.Size(284, 338);
+            this.pictureBoxDC.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxDC.TabIndex = 777;
+            this.pictureBoxDC.TabStop = false;
+            // 
+            // labelInfoProgres
+            // 
+            this.labelInfoProgres.BackColor = System.Drawing.Color.Transparent;
+            this.labelInfoProgres.Font = new System.Drawing.Font("Segoe UI Semibold", 8.5F, System.Drawing.FontStyle.Bold);
+            this.labelInfoProgres.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
+            this.labelInfoProgres.Location = new System.Drawing.Point(302, 285);
+            this.labelInfoProgres.Name = "labelInfoProgres";
+            this.labelInfoProgres.Size = new System.Drawing.Size(355, 18);
+            this.labelInfoProgres.TabIndex = 811;
+            this.labelInfoProgres.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // Guna2ProgressBar1
+            // 
+            this.Guna2ProgressBar1.BackColor = System.Drawing.Color.Transparent;
+            this.Guna2ProgressBar1.BorderColor = System.Drawing.Color.Transparent;
+            this.Guna2ProgressBar1.BorderRadius = 4;
+            this.Guna2ProgressBar1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(42)))));
+            this.Guna2ProgressBar1.ForeColor = System.Drawing.Color.Transparent;
+            this.Guna2ProgressBar1.Location = new System.Drawing.Point(331, 331);
+            this.Guna2ProgressBar1.Minimum = 10;
+            this.Guna2ProgressBar1.Name = "Guna2ProgressBar1";
+            this.Guna2ProgressBar1.ProgressBrushMode = Guna.UI2.WinForms.Enums.BrushMode.Solid;
+            this.Guna2ProgressBar1.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.Guna2ProgressBar1.ProgressColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(210)))), ((int)(((byte)(255)))));
+            this.Guna2ProgressBar1.Size = new System.Drawing.Size(372, 8);
+            this.Guna2ProgressBar1.TabIndex = 816;
+            this.Guna2ProgressBar1.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
+            this.Guna2ProgressBar1.Value = 100;
+            // 
+            // ActivateButton
+            // 
+            this.ActivateButton.Animated = true;
+            this.ActivateButton.BackColor = System.Drawing.Color.Transparent;
+            this.ActivateButton.BorderColor = System.Drawing.Color.Transparent;
+            this.ActivateButton.BorderRadius = 10;
+            this.ActivateButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ActivateButton.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.ActivateButton.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.ActivateButton.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.ActivateButton.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.ActivateButton.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.ActivateButton.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.ActivateButton.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(100)))), ((int)(((byte)(210)))));
+            this.ActivateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.ActivateButton.ForeColor = System.Drawing.Color.White;
+            this.ActivateButton.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.ActivateButton.IndicateFocus = true;
+            this.ActivateButton.Location = new System.Drawing.Point(331, 347);
+            this.ActivateButton.Name = "ActivateButton";
+            this.ActivateButton.Size = new System.Drawing.Size(371, 32);
+            this.ActivateButton.TabIndex = 817;
+            this.ActivateButton.Text = "Activate Your Device";
+            this.ActivateButton.UseTransparentBackground = true;
+            this.ActivateButton.Click += new System.EventHandler(this.ActivateButton_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(1030, 170);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(32, 15);
+            this.label2.TabIndex = 821;
+            this.label2.Text = "IMEI";
+            // 
+            // labelIMEI
+            // 
+            this.labelIMEI.AutoSize = true;
+            this.labelIMEI.BackColor = System.Drawing.Color.Transparent;
+            this.labelIMEI.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.labelIMEI.ForeColor = System.Drawing.Color.White;
+            this.labelIMEI.Location = new System.Drawing.Point(1105, 170);
+            this.labelIMEI.Name = "labelIMEI";
+            this.labelIMEI.Size = new System.Drawing.Size(29, 15);
+            this.labelIMEI.TabIndex = 825;
+            this.labelIMEI.Text = "N/A";
+            // 
+            // LogsBox
+            // 
+            this.LogsBox.BackColor = System.Drawing.Color.Transparent;
+            this.LogsBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(52)))));
+            this.LogsBox.BorderRadius = 12;
+            this.LogsBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.LogsBox.DefaultText = "";
+            this.LogsBox.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(20)))));
+            this.LogsBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.LogsBox.Font = new System.Drawing.Font("Consolas", 9F);
+            this.LogsBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(209)))), ((int)(((byte)(88)))));
+            this.LogsBox.Location = new System.Drawing.Point(1183, 20);
+            this.LogsBox.Multiline = true;
+            this.LogsBox.Name = "LogsBox";
+            this.LogsBox.PlaceholderText = "";
+            this.LogsBox.ReadOnly = true;
+            this.LogsBox.SelectedText = "";
+            this.LogsBox.Size = new System.Drawing.Size(8, 8);
+            this.LogsBox.TabIndex = 827;
+            // 
+            // labelECID
+            // 
+            this.labelECID.AutoSize = true;
+            this.labelECID.BackColor = System.Drawing.Color.Transparent;
+            this.labelECID.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.labelECID.ForeColor = System.Drawing.Color.White;
+            this.labelECID.Location = new System.Drawing.Point(1030, 231);
+            this.labelECID.Name = "labelECID";
+            this.labelECID.Size = new System.Drawing.Size(29, 15);
+            this.labelECID.TabIndex = 829;
+            this.labelECID.Text = "N/A";
+            // 
+            // guna2Panel1
+            // 
+            this.guna2Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(32)))));
+            this.guna2Panel1.Controls.Add(this.guna2CircleButton5);
+            this.guna2Panel1.Controls.Add(this.label8);
+            this.guna2Panel1.Controls.Add(this.guna2CircleButton3);
+            this.guna2Panel1.Location = new System.Drawing.Point(-5, 1);
+            this.guna2Panel1.Name = "guna2Panel1";
+            this.guna2Panel1.Size = new System.Drawing.Size(722, 38);
+            this.guna2Panel1.TabIndex = 836;
+            // 
+            // guna2CircleButton5
+            // 
+            this.guna2CircleButton5.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2CircleButton5.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(194)))), ((int)(((byte)(11)))));
+            this.guna2CircleButton5.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.guna2CircleButton5.ForeColor = System.Drawing.Color.White;
+            this.guna2CircleButton5.Location = new System.Drawing.Point(671, 11);
+            this.guna2CircleButton5.Name = "guna2CircleButton5";
+            this.guna2CircleButton5.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
+            this.guna2CircleButton5.Size = new System.Drawing.Size(13, 13);
+            this.guna2CircleButton5.TabIndex = 834;
+            this.guna2CircleButton5.Click += new System.EventHandler(this.guna2CircleButton5_Click);
+            // 
+            // label8
+            // 
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.label8.ForeColor = System.Drawing.Color.White;
+            this.label8.Location = new System.Drawing.Point(172, 7);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(343, 19);
+            this.label8.TabIndex = 721;
+            this.label8.Text = "BobikA5 v1.0.2";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label8.Click += new System.EventHandler(this.label8_Click);
+            // 
+            // guna2CircleButton3
+            // 
+            this.guna2CircleButton3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2CircleButton3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(0)))), ((int)(((byte)(59)))));
+            this.guna2CircleButton3.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.guna2CircleButton3.ForeColor = System.Drawing.Color.White;
+            this.guna2CircleButton3.Location = new System.Drawing.Point(692, 11);
+            this.guna2CircleButton3.Name = "guna2CircleButton3";
+            this.guna2CircleButton3.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
+            this.guna2CircleButton3.Size = new System.Drawing.Size(13, 13);
+            this.guna2CircleButton3.TabIndex = 6;
+            this.guna2CircleButton3.Click += new System.EventHandler(this.guna2CircleButton3_Click);
+            // 
+            // labeludidsn
+            // 
+            this.labeludidsn.BackColor = System.Drawing.Color.Transparent;
+            this.labeludidsn.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
+            this.labeludidsn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
+            this.labeludidsn.Location = new System.Drawing.Point(302, 241);
+            this.labeludidsn.Name = "labeludidsn";
+            this.labeludidsn.Size = new System.Drawing.Size(456, 19);
+            this.labeludidsn.TabIndex = 854;
+            this.labeludidsn.Text = "UDID - SN";
+            this.labeludidsn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labeludidsn.Click += new System.EventHandler(this.labeludidsn_Click);
+            // 
+            // labelimeimeid
+            // 
+            this.labelimeimeid.BackColor = System.Drawing.Color.Transparent;
+            this.labelimeimeid.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
+            this.labelimeimeid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(147)))));
+            this.labelimeimeid.Location = new System.Drawing.Point(324, 210);
+            this.labelimeimeid.Name = "labelimeimeid";
+            this.labelimeimeid.Size = new System.Drawing.Size(452, 19);
+            this.labelimeimeid.TabIndex = 853;
+            this.labelimeimeid.Text = "IMEI - MEID";
+            this.labelimeimeid.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelptios
+            // 
+            this.labelptios.BackColor = System.Drawing.Color.Transparent;
+            this.labelptios.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.labelptios.ForeColor = System.Drawing.Color.White;
+            this.labelptios.Location = new System.Drawing.Point(328, 170);
+            this.labelptios.Name = "labelptios";
+            this.labelptios.Size = new System.Drawing.Size(448, 19);
+            this.labelptios.TabIndex = 855;
+            this.labelptios.Text = "There is not Device Connected";
+            this.labelptios.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labeluuid
+            // 
+            this.labeluuid.BackColor = System.Drawing.Color.Transparent;
+            this.labeluuid.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.labeluuid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(72)))), ((int)(((byte)(72)))), ((int)(((byte)(74)))));
+            this.labeluuid.Location = new System.Drawing.Point(301, 90);
+            this.labeluuid.Name = "labeluuid";
+            this.labeluuid.Size = new System.Drawing.Size(452, 19);
+            this.labeluuid.TabIndex = 856;
+            this.labeluuid.Text = "APP UUID: ";
+            this.labeluuid.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // guna2GradientButton3
+            // 
+            this.guna2GradientButton3.Animated = true;
+            this.guna2GradientButton3.BackColor = System.Drawing.Color.Transparent;
+            this.guna2GradientButton3.BorderRadius = 10;
+            this.guna2GradientButton3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2GradientButton3.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(46)))));
+            this.guna2GradientButton3.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(30)))));
+            this.guna2GradientButton3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+            this.guna2GradientButton3.ForeColor = System.Drawing.Color.White;
+            this.guna2GradientButton3.IndicateFocus = true;
+            this.guna2GradientButton3.Location = new System.Drawing.Point(331, 347);
+            this.guna2GradientButton3.Name = "guna2GradientButton3";
+            this.guna2GradientButton3.Size = new System.Drawing.Size(371, 32);
+            this.guna2GradientButton3.TabIndex = 858;
+            this.guna2GradientButton3.Text = "Check Device Compatibility";
+            this.guna2GradientButton3.UseTransparentBackground = true;
+            this.guna2GradientButton3.Click += new System.EventHandler(this.guna2GradientButton3_Click_1);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
+            this.ClientSize = new System.Drawing.Size(717, 405);
+            this.Controls.Add(this.guna2GradientButton3);
+            this.Controls.Add(this.ActivateButton);
+            this.Controls.Add(this.Guna2ProgressBar1);
+            this.Controls.Add(this.labeludidsn);
+            this.Controls.Add(this.labelimeimeid);
+            this.Controls.Add(this.labelptios);
+            this.Controls.Add(this.labeluuid);
+            this.Controls.Add(this.guna2Panel1);
+            this.Controls.Add(this.pictureBoxModel);
+            this.Controls.Add(this.labelECID);
+            this.Controls.Add(this.LogsBox);
+            this.Controls.Add(this.labelIMEI);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.labelActivaction);
+            this.Controls.Add(this.Status);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.labelVersion);
+            this.Controls.Add(this.label20);
+            this.Controls.Add(this.labelSN);
+            this.Controls.Add(this.ModeloffHello);
+            this.Controls.Add(this.labelType);
+            this.Controls.Add(this.labelInfoProgres);
+            this.Controls.Add(this.pictureBoxDC);
+            this.Controls.Add(this.label23);
+            this.DoubleBuffered = true;
+            this.ForeColor = System.Drawing.Color.White;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "BobikA5";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).EndInit();
+            this.guna2Panel1.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
     }
 
     private void guna2CircleButton3_Click(object sender, EventArgs e)
@@ -2078,6 +2098,11 @@ public class Form1 : Form
     }
 
     private void pictureBoxModel_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void label8_Click(object sender, EventArgs e)
     {
 
     }

@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "RLNaqwGBLGo=",
+  "dgSpecHash": "zrW5bFyZ6Co=",
   "success": true,
   "projectFilePath": "C:\\bobikk\\SpiderPRO.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dalbxxx\\.nuget\\packages\\guna.ui2.winforms\\2.0.4.7\\guna.ui2.winforms.2.0.4.7.nupkg.sha512",
     "C:\\Users\\dalbxxx\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
+    "C:\\Users\\dalbxxx\\.nuget\\packages\\obfuscar\\2.2.50\\obfuscar.2.2.50.nupkg.sha512",
     "C:\\Users\\dalbxxx\\.nuget\\packages\\vmprotect.sdk\\1.0.0\\vmprotect.sdk.1.0.0.nupkg.sha512"
   ],
   "logs": []

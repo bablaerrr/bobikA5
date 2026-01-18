@@ -54,6 +54,12 @@
               "target": "Package",
               "version": "[13.0.4, )"
             },
+            "Obfuscar": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.2.50, )"
+            },
             "VMProtect.SDK": {
               "target": "Package",
               "version": "[1.0.0, )"
