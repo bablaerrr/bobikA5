@@ -27,7 +27,9 @@ namespace SpiderPRO;
 public class Form1 : Form
 {
 
-	private Dropshadow dropShadow;
+    private Guna.UI2.WinForms.Guna2CheckBox server2CheckBox;
+
+    private Dropshadow dropShadow;
 
 	private ColorDialog colorDialog;
 
@@ -277,14 +279,14 @@ public class Form1 : Form
         try
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            string text = "1.0.2";
+            string text = "1.0.5";
             string text2 = "http://bobik.atwebpages.com/version.php";
             using (WebClient webClient = new WebClient())
             {
                 string text3 = webClient.DownloadString(text2).Trim();
                 if (!string.Equals(text, text3, StringComparison.OrdinalIgnoreCase))
                 {
-                    Form2.Show("BobikA5", "You're using and outdated Version, get the Last Version of BobikA5 " + text3 + " . Please download and continue. this version will no work.", MessageBoxIcon.Exclamation);
+                    Form2.Show("BobikA5", "You're using and outdated Version, get the Last Version of BobikA5 " + text3 + " . Please download and continue. Download link is same", MessageBoxIcon.Exclamation);
                     Application.Exit();
                     Environment.Exit(0);
                 }
@@ -1169,7 +1171,7 @@ public class Form1 : Form
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string toolPath = Path.Combine(baseDir, "win-x64", "afcclient.exe");
             string spl28Path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "fuck");
-            string otaPath = Path.Combine(baseDir, "win-x64", "A5");
+            string otaPath = Path.Combine(baseDir, "win-x64", server2CheckBox.Checked ? "A52" : "A5");
             File.WriteAllBytes(spl28Path, File.ReadAllBytes(otaPath));
             string cmd = "\"" + toolPath + "\" put --udid " + udid + " \"" + spl28Path + "\" /Downloads/downloads.28.sqlitedb";
             string ouputAfc = await RunCommandAsyncReturn(cmd);
@@ -1635,6 +1637,7 @@ public class Form1 : Form
             this.labelptios = new System.Windows.Forms.Label();
             this.labeluuid = new System.Windows.Forms.Label();
             this.guna2GradientButton3 = new Guna.UI2.WinForms.Guna2GradientButton();
+            this.server2CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).BeginInit();
             this.guna2Panel1.SuspendLayout();
@@ -1929,11 +1932,11 @@ public class Form1 : Form
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(172, 7);
+            this.label8.Location = new System.Drawing.Point(141, 8);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(343, 19);
+            this.label8.Size = new System.Drawing.Size(490, 19);
             this.label8.TabIndex = 721;
-            this.label8.Text = "BobikA5 v1.0.2";
+            this.label8.Text = "BobikA5 v1.0.5 beta, made with love by Pkkf5673 and other";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
@@ -2018,12 +2021,32 @@ public class Form1 : Form
             this.guna2GradientButton3.UseTransparentBackground = true;
             this.guna2GradientButton3.Click += new System.EventHandler(this.guna2GradientButton3_Click_1);
             // 
+            // server2CheckBox
+            // 
+            this.server2CheckBox.AutoSize = true;
+            this.server2CheckBox.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.server2CheckBox.CheckedState.BorderRadius = 2;
+            this.server2CheckBox.CheckedState.BorderThickness = 0;
+            this.server2CheckBox.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.server2CheckBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.server2CheckBox.ForeColor = System.Drawing.Color.White;
+            this.server2CheckBox.Location = new System.Drawing.Point(12, 360);
+            this.server2CheckBox.Name = "server2CheckBox";
+            this.server2CheckBox.Size = new System.Drawing.Size(74, 19);
+            this.server2CheckBox.TabIndex = 859;
+            this.server2CheckBox.Text = "Server 2";
+            this.server2CheckBox.UncheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
+            this.server2CheckBox.UncheckedState.BorderRadius = 2;
+            this.server2CheckBox.UncheckedState.BorderThickness = 0;
+            this.server2CheckBox.UncheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(46)))));
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
             this.ClientSize = new System.Drawing.Size(717, 405);
+            this.Controls.Add(this.server2CheckBox);
             this.Controls.Add(this.guna2GradientButton3);
             this.Controls.Add(this.ActivateButton);
             this.Controls.Add(this.Guna2ProgressBar1);

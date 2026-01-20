@@ -25,14 +25,9 @@ public class ProcessMonitor
 	{
 		_processesToKill = new List<string>
 		{
-			"dnspy", "dnspy-x86", "ilspy", "dotpeek", "justdecompile", "reflector", "fiddler", "fiddler.exe", "charles", "charles.exe",
-			"burp", "burpsuite", "burpsuite.exe", "mitmproxy", "mitmdump", "mitmproxy.exe", "proxifier", "mitmproxy.exe", "wireshark", "tshark",
-			"tcpdump", "tcpdump.exe", "tcpflow", "ngrep", "ettercap", "ettercap.exe", "netmon", "netmon.exe", "ida", "idaq",
-			"ida64", "idaq64", "ghidra", "ghidrarun", "radare2", "r2", "x64dbg", "x32dbg", "ollydbg", "ollydbg.exe",
-			"ImmunityDebugger", "scylla", "procmon", "procmon.exe", "processhacker", "processhacker.exe", "frida", "frida-server", "frida-server.exe", "adb",
-			"adb.exe", "jdb", "jdb.exe", "jadx", "jadx-gui", "apktool", "nmap", "ncat", "netcat", "scapy"
+			"lol"
 		};
-		_processPatterns = new List<string> { "*debug*", "*proxy*", "*sniff*", "*analyzer*", "*monitor*", "*inspector*" };
+		_processPatterns = new List<string> { "*sigmo*" };
 		_cancellationTokenSource = new CancellationTokenSource();
 	}
 
