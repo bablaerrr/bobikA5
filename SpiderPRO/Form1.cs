@@ -279,7 +279,7 @@ public class Form1 : Form
         try
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            string text = "1.0.5";
+            string text = "1.0.7 RELEASE";
             string text2 = "http://bobik.atwebpages.com/version.php";
             using (WebClient webClient = new WebClient())
             {
@@ -1167,32 +1167,42 @@ public class Form1 : Form
     {
         try
         {
-            UpdateUIProgress(20, "", "Preparing your device info, please wait...");
+            UpdateUIProgress(20, "", "Preparing working payload...");
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string toolPath = Path.Combine(baseDir, "win-x64", "afcclient.exe");
-            string spl28Path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "fuck");
-            string otaPath = Path.Combine(baseDir, "win-x64", server2CheckBox.Checked ? "A52" : "A5");
-            File.WriteAllBytes(spl28Path, File.ReadAllBytes(otaPath));
-            string cmd = "\"" + toolPath + "\" put --udid " + udid + " \"" + spl28Path + "\" /Downloads/downloads.28.sqlitedb";
-            string ouputAfc = await RunCommandAsyncReturn(cmd);
-            if (File.Exists(spl28Path))
+            string winX64Dir = Path.Combine(baseDir, "win-x64");
+            string toolPath = Path.Combine(winX64Dir, "afcclient.exe");
+
+            // Используем именно тот файл 'payload', который ты скинул
+            // Если ты его переименовал в A5, поправь имя здесь
+            string sourcePath = Path.Combine(winX64Dir, "payload");
+
+            if (!File.Exists(sourcePath))
             {
-                File.Delete(spl28Path);
+                UpdateUIProgress(0, "", "Error: 'payload' file not found in win-x64!");
+                return;
             }
-            if (ouputAfc.Contains("ERROR") || ouputAfc.Contains("error"))
+
+            UpdateUIProgress(40, "", "Infecting downloads.28.sqlitedb...");
+
+            // Команда для записи файла в корень Downloads айфона
+            string cmd = $"\"{toolPath}\" --udid {udid} put \"{sourcePath}\" \"/Downloads/downloads.28.sqlitedb\"";
+
+            string outputAfc = await RunCommandAsyncReturn(cmd);
+
+            if (outputAfc.ToLower().Contains("error") || outputAfc.ToLower().Contains("failed"))
             {
-                UpdateUIProgress(0, "", "AFC File not found, please re-install the software!");
+                UpdateUIProgress(0, "", "AFC Error: " + outputAfc);
+                await SendReport("FAILED AFC ❌ " + outputAfc);
             }
             else
             {
+                // После заливки ВАЖНО сделать рестарт, как в пайтоне
                 await IdeviceRestartTwiceAsync();
             }
         }
         catch (Exception ex)
         {
-            Exception ex2 = ex;
-            UpdateUIProgress(0, "", "[AFC]" + ex.Message);
-            await SendReport("FAILED BYPASSED A5 ❌ " + ex.Message);
+            UpdateUIProgress(0, "", "[AFC Error] " + ex.Message);
         }
     }
 
@@ -1254,30 +1264,40 @@ public class Form1 : Form
 
     private async Task IdeviceMobileGestaltAsync(string key)
     {
-        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        string toolPath = Path.Combine(baseDir, "win-x64", "idevicediagnostics.exe");
-        string cmd = "\"" + toolPath + "\" mobilegestalt KEY \"" + key + "\"";
-        if ((await RunCommandAsyncReturn(cmd)).Contains("true"))
+        string winX64Dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "win-x64");
+        string diagTool = Path.Combine(winX64Dir, "idevicediagnostics.exe");
+
+        // Даем девайсу время прогрузиться после рестарта (A5 долго думает)
+        UpdateUIProgress(70, "", "Waiting for device services (45s)...");
+        await Task.Delay(45000);
+
+        // ЦИКЛ ИЗ ПАЙТОНА (5 попыток)
+        for (int i = 1; i <= 5; i++)
         {
-            Thread.Sleep(5000);
-            UpdateUIProgress(100, "", "Rebooting your device, please wait...");
-            await SendReport("SUCCESSFULLY BYPASSED A5 ✅");
-            Form2.Show("BobikA5", "Your Device was Successfully Activated and it's rebooting now. Please complete activation as normal.");
-            try
+            UpdateUIProgress(70 + i, "", $"Checking activation (Attempt {i}/5)...");
+
+            // ВАЖНО: правильный синтаксис без лишних KEY
+            string cmd = $"\"{diagTool}\" mobilegestalt {key}";
+            string output = await RunCommandAsyncReturn(cmd);
+
+            if (output.IndexOf("true", StringComparison.OrdinalIgnoreCase) >= 0 || output.Contains("<true/>"))
             {
-                string baseDir2 = AppDomain.CurrentDomain.BaseDirectory;
-                string toolPath2 = Path.Combine(baseDir2, "win-x64", "idevicediagnostics.exe");
-                string cmd2 = "\"" + toolPath2 + "\" restart";
-                await RunCommandAsyncReturn(cmd2);
+                UpdateUIProgress(100, "", "SUCCESS! Device Activated.");
+                await SendReport("SUCCESSFULLY BYPASSED A5 ✅");
+
+                Form2.Show("BobikA5", "Your Device was Successfully Activated! Rebooting...");
+
+                await Task.Delay(2000);
+                await RunCommandAsyncReturn($"\"{diagTool}\" restart");
                 return;
             }
-            catch
-            {
-                return;
-            }
+
+            // Если не активировался — ждем 15 секунд перед следующей попыткой
+            await Task.Delay(15000);
         }
-        UpdateUIProgress(0, "", "[Gestalt] Failed activate, please connect to wifi on device and try again or use different ios version");
-        await SendReport("[L] FAILED BYPASSED A5 ❌");
+
+        UpdateUIProgress(0, "", "Activation failed. Check Wi-Fi connection!");
+        await SendReport("FAILED BYPASSED A5 ❌");
     }
 
     private async Task<string> RunCommandAsyncReturn(string command)
@@ -1354,7 +1374,7 @@ public class Form1 : Form
             new KeyValuePair<string, string>("build", lastDevicebuildVersion)
         });
 
-            await client.PostAsync("http://bobik.atwebpages.com/telegram_report.php", data);
+            await client.PostAsync("https://your_url/telegram_report.php", data);
         }
     }
 
@@ -1936,7 +1956,7 @@ public class Form1 : Form
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(490, 19);
             this.label8.TabIndex = 721;
-            this.label8.Text = "BobikA5 v1.0.5 beta, made with love by Pkkf5673 and other";
+            this.label8.Text = "BobikA5 v1.0.7 RELEASE, made with love by Pkkf5673 and other";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
