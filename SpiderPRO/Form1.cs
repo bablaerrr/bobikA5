@@ -106,6 +106,8 @@ public class Form1 : Form
 
     internal PictureBox pictureBox3;
 
+    internal PictureBox pictureBoxDiscord;
+
     private Label labelType;
 
 	private Label labelVersion;
@@ -181,7 +183,7 @@ public class Form1 : Form
 		APP_UUID();
         this.CheckVersion();
 		ActivateButton.Hide();
-        labelptios.Text = "There is not Device Connected";
+        labelptios.Text = "There is no device connected in normal mode";
         labelimeimeid.Text = "";
         labeludidsn.Text = "";
         SetupDragging();
@@ -281,7 +283,7 @@ public class Form1 : Form
         try
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            string text = "1.0.9 RELEASE 2";
+            string text = "1.1 RELEASE";
             string text2 = "http://bobik.atwebpages.com/version.php";
             using (WebClient webClient = new WebClient())
             {
@@ -325,6 +327,8 @@ public class Form1 : Form
         base.FormBorderStyle = FormBorderStyle.None;
 		InitializeFormSettings();
 		StartDeviceListener();
+        _ = LoadTelegramIcon();
+        _ = LoadDiscordIcon();
         this.pictureBoxModel.SendToBack();
         InitializeDeviceManagers();
 		UpdateButtonStates(activateEnabled: true, otaBlockEnabled: false);
@@ -1050,6 +1054,61 @@ public class Form1 : Form
 		});
 	}
 
+    private async Task LoadDiscordIcon()
+    {
+        // Ссылка на логотип Discord
+        string iconUrl = "https://cdn-icons-png.flaticon.com/512/5968/5968756.png";
+
+        try
+        {
+            // Инициализируем объект, если его еще нет
+            if (pictureBoxDiscord == null)
+            {
+                pictureBoxDiscord = new PictureBox();
+                this.Controls.Add(pictureBoxDiscord); // Добавляем на форму
+            }
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
+                byte[] imageBytes = await client.GetByteArrayAsync(iconUrl);
+                using (MemoryStream ms = new MemoryStream(imageBytes))
+                {
+                    this.pictureBoxDiscord.Image = Image.FromStream(ms);
+                }
+            }
+
+            // Настройки размера и вида
+            this.pictureBoxDiscord.Size = new Size(32, 32);
+            this.pictureBoxDiscord.SizeMode = PictureBoxSizeMode.Zoom;
+            this.pictureBoxDiscord.BackColor = Color.Transparent;
+            this.pictureBoxDiscord.Cursor = Cursors.Hand;
+
+            
+            this.pictureBoxDiscord.Parent = this.guna2Panel1;
+
+            
+            this.pictureBoxDiscord.BackColor = Color.Transparent;
+
+            
+            this.pictureBoxDiscord.Location = new Point(50, 10); 
+            this.pictureBoxDiscord.Location = new Point(this.pictureBox3.Location.X + 40, this.pictureBox3.Location.Y);
+
+            this.pictureBoxDiscord.Visible = true;
+            this.pictureBoxDiscord.BringToFront();
+
+            
+            this.pictureBoxDiscord.Click += (s, e) => {
+                Process.Start(new ProcessStartInfo("https://discord.gg/VfMPhkww3E") { UseShellExecute = true });
+            };
+
+        }
+        catch (Exception ex)
+        {
+            AddLog("Ошибка загрузки Discord: " + ex.Message, Color.Red);
+        }
+    }
+
     private async Task LoadImageWithZoomAsync(float zoomFactor)
     {
         if (string.IsNullOrEmpty(currentProductType)) return;
@@ -1250,31 +1309,29 @@ public class Form1 : Form
 
     private async Task LoadTelegramIcon()
     {
-        // Ссылка на иконку Telegram
         string iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/100px-Telegram_logo.svg.png";
-
         try
         {
             using (HttpClient client = new HttpClient())
             {
-                // Скачиваем данные картинки
-                byte[] imageBytes = await client.GetByteArrayAsync(iconUrl);
+                // ОБЯЗАТЕЛЬНО: добавляем User-Agent, чтобы сайт отдал картинку
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
 
+                byte[] imageBytes = await client.GetByteArrayAsync(iconUrl);
                 using (MemoryStream ms = new MemoryStream(imageBytes))
                 {
-                    // Устанавливаем картинку в наш pictureBox3
                     this.pictureBox3.Image = Image.FromStream(ms);
                 }
             }
-
-            // Настраиваем внешний вид
             this.pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            this.pictureBox3.BackColor = Color.Transparent; // Убираем голубой фон
             this.pictureBox3.Cursor = Cursors.Hand;
             this.pictureBox3.BringToFront();
         }
-        catch
+        catch (Exception ex)
         {
-            // Если интернета нет или ссылка битая, просто покрасим в синий цвет
+            // Если все равно ошибка, выведи её в лог, чтобы понять причину
+            AddLog("Ошибка загрузки TG: " + ex.Message, Color.Red);
             this.pictureBox3.BackColor = Color.FromArgb(0, 136, 204);
         }
     }
@@ -1744,14 +1801,14 @@ public class Form1 : Form
             this.labelptios = new System.Windows.Forms.Label();
             this.labeluuid = new System.Windows.Forms.Label();
             this.guna2GradientButton3 = new Guna.UI2.WinForms.Guna2GradientButton();
-        this.serverSelectComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
-        ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
+            this.serverSelectComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).BeginInit();
             this.guna2Panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
-            
-   
             // labelType
             // 
             this.labelType.AutoSize = true;
@@ -1852,32 +1909,10 @@ public class Form1 : Form
             // 
             this.guna2Elipse1.BorderRadius = 22;
             this.guna2Elipse1.TargetControl = this;
-
-        // Инициализация объекта
-        this.pictureBox3 = new System.Windows.Forms.PictureBox();
-
-        // Создаем менеджер, который полезет в файл ресурсов Form2
-       
-
-        // Достаем объект по имени "telegram" (проверьте, что в Form2.resx имя именно такое!)
-        this.pictureBox3.Image = (Image)resources.GetObject("telegram");
-
-        // Привязка события клика
-        this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
-
-        // Настройка внешнего вида (пример)
-        this.pictureBox3.Location = new System.Drawing.Point(10, 10); // Укажите свои координаты
-        this.pictureBox3.Size = new System.Drawing.Size(40, 40);
-        this.pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-        this.pictureBox3.Cursor = Cursors.Hand; // Чтобы при наведении был "палец"
-
-        // Добавление на форму
-        this.Controls.Add(this.pictureBox3);
-        this.pictureBox3.BringToFront();
-        // 
-        // Status
-        // 
-        this.Status.AutoSize = true;
+            // 
+            // Status
+            // 
+            this.Status.AutoSize = true;
             this.Status.BackColor = System.Drawing.Color.Transparent;
             this.Status.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Status.ForeColor = System.Drawing.Color.White;
@@ -2037,6 +2072,7 @@ public class Form1 : Form
             // guna2Panel1
             // 
             this.guna2Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(32)))));
+            this.guna2Panel1.Controls.Add(this.pictureBox3);
             this.guna2Panel1.Controls.Add(this.guna2CircleButton5);
             this.guna2Panel1.Controls.Add(this.label8);
             this.guna2Panel1.Controls.Add(this.guna2CircleButton3);
@@ -2067,7 +2103,7 @@ public class Form1 : Form
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(490, 19);
             this.label8.TabIndex = 721;
-            this.label8.Text = "BobikA5 v1.0.9 RELEASE 2 , made with love by Pkkf5673 and other";
+            this.label8.Text = "BobikA5 v1.1 RELEASE, made with love by Pkkf5673 and other";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
@@ -2151,30 +2187,42 @@ public class Form1 : Form
             this.guna2GradientButton3.Text = "Check Device Compatibility";
             this.guna2GradientButton3.UseTransparentBackground = true;
             this.guna2GradientButton3.Click += new System.EventHandler(this.guna2GradientButton3_Click_1);
-        // 
-        // serverSelectComboBox
-        // 
-        this.serverSelectComboBox.BackColor = System.Drawing.Color.Transparent;
-        this.serverSelectComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-        this.serverSelectComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-        this.serverSelectComboBox.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(46)))));
-        this.serverSelectComboBox.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-        this.serverSelectComboBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-        this.serverSelectComboBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-        this.serverSelectComboBox.ForeColor = System.Drawing.Color.White;
-        this.serverSelectComboBox.ItemHeight = 30;
-        this.serverSelectComboBox.Items.AddRange(new object[] {
-"Server 1",
-"Server 2",
-"Server 3"});
-        this.serverSelectComboBox.Location = new System.Drawing.Point(12, 340);
-        this.serverSelectComboBox.Name = "serverSelectComboBox";
-        this.serverSelectComboBox.Size = new System.Drawing.Size(110, 26);
-        this.serverSelectComboBox.TabIndex = 859;
-        this.serverSelectComboBox.StartIndex = 0; // 
-                                                  // Form1
-                                                  // 
-        this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            // 
+            // serverSelectComboBox
+            // 
+            this.serverSelectComboBox.BackColor = System.Drawing.Color.Transparent;
+            this.serverSelectComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.serverSelectComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.serverSelectComboBox.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(46)))));
+            this.serverSelectComboBox.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.serverSelectComboBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+            this.serverSelectComboBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.serverSelectComboBox.ForeColor = System.Drawing.Color.White;
+            this.serverSelectComboBox.ItemHeight = 30;
+            this.serverSelectComboBox.Items.AddRange(new object[] {
+            "Server 1",
+            "Server 2",
+            "Server 3"});
+            this.serverSelectComboBox.Location = new System.Drawing.Point(12, 340);
+            this.serverSelectComboBox.Name = "serverSelectComboBox";
+            this.serverSelectComboBox.Size = new System.Drawing.Size(110, 36);
+            this.serverSelectComboBox.StartIndex = 0;
+            this.serverSelectComboBox.TabIndex = 859;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox3.Location = new System.Drawing.Point(17, 3);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(31, 32);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 0;
+            this.pictureBox3.TabStop = false;
+            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
             this.ClientSize = new System.Drawing.Size(717, 405);
@@ -2215,6 +2263,7 @@ public class Form1 : Form
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).EndInit();
             this.guna2Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

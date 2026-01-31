@@ -160,7 +160,7 @@
               "RelativeDocumentMoniker": "SpiderPRO\\Form1.cs",
               "ToolTip": "C:\\bobikk\\SpiderPRO\\Form1.cs",
               "RelativeToolTip": "SpiderPRO\\Form1.cs",
-              "ViewState": "AgIAAAgBAAAAAAAAAAAcwBsBAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAAAoBAAAAAAAAAAAcwB0BAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T14:54:56.64Z",
               "EditorCaption": ""
@@ -203,13 +203,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Form1.cs [Design]",
+              "Title": "Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form1.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\Form1.cs",
-              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form1.cs [Design]",
-              "RelativeToolTip": "SpiderPRO\\Form1.cs [Design]",
+              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "RelativeToolTip": "SpiderPRO\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T14:07:46.118Z"
+              "WhenOpened": "2026-01-13T14:07:46.118Z",
+              "EditorCaption": " [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]"
             },
             {
               "$type": "Document",
@@ -412,7 +413,8 @@
               "ToolTip": "C:\\bobikk\\SpiderPRO\\Form1.resx",
               "RelativeToolTip": "SpiderPRO\\Form1.resx",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
-              "WhenOpened": "2026-01-15T14:12:32.583Z"
+              "WhenOpened": "2026-01-15T14:12:32.583Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
