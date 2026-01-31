@@ -127,7 +127,7 @@
   <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAS
-        cgAAEnIBXmVb4wAAFb5JREFUeF7t3WmsLcdRB/An5wvw0Ujwxfiu55yZOd6IIQTCFvY1bDZmlWMQQhib
+        cQAAEnEB89x6jgAAFb5JREFUeF7t3WmsLcdRB/An5wvw0Ujwxfiu55yZOd6IIQTCFvY1bDZmlWMQQhib
         xSwCA2LfCTsvQBRstgBm38ISsAEDBgJmB7Mv5tnIHxBSFClSbA/6zUy917fvnHNmzp37fJ/xSKU7d6ar
         6l/VPd3V3TVzzp07e8dVVVVdvVwub6yq6pZlWd67LMv7qrJ8sKrKx6qqfKoqizdXZfHWZVU+i5w319xT
         piwfxIO3kdHKuprsXNkLx7lz526++ea3K4riuqoqbq+q4vyyLB6uyuJxTl1W5TPLqqy3pGe6ynq8kVkV
@@ -3354,5 +3354,8 @@
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="$this.Icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\icon.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="telegram" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Telegram_logo.svg.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

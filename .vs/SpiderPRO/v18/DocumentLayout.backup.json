@@ -11,6 +11,18 @@
       "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:spiderpro\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|c:\\bobikk\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|c:\\bobikk\\spiderpro.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:spiderpro.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|c:\\bobikk\\spiderpro.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:spiderpro.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|c:\\bobikk\\spiderpro\\processmonitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:spiderpro\\processmonitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -124,19 +136,11 @@
       "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:app.manifest||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|c:\\bobikk\\spiderpro.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:spiderpro.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|R:\\oo\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|C:\\bobikk\\spiderpro\\dropshadow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:spiderpro\\dropshadow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|c:\\bobikk\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{ED1B9D8A-B83B-EDB0-4515-3033E5156901}|SpiderPRO.csproj|solutionrelative:properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -156,37 +160,60 @@
               "RelativeDocumentMoniker": "SpiderPRO\\Form1.cs",
               "ToolTip": "C:\\bobikk\\SpiderPRO\\Form1.cs",
               "RelativeToolTip": "SpiderPRO\\Form1.cs",
-              "ViewState": "AgIAAAYBAAAAAAAAAAAcwBkBAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAAgBAAAAAAAAAAAcwBsBAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T14:54:56.64Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
-              "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form1.cs",
-              "RelativeDocumentMoniker": "SpiderPRO\\Form1.cs",
-              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
-              "RelativeToolTip": "SpiderPRO\\Form1.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "DocumentIndex": 8,
+              "Title": "Form2.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form2.cs",
+              "RelativeDocumentMoniker": "SpiderPRO\\Form2.cs",
+              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form2.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
+              "RelativeToolTip": "SpiderPRO\\Form2.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-13T14:07:46.118Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Form2.Designer.cs",
-              "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form2.Designer.cs",
-              "RelativeDocumentMoniker": "SpiderPRO\\Form2.Designer.cs",
-              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form2.Designer.cs",
-              "RelativeToolTip": "SpiderPRO\\Form2.Designer.cs",
-              "ViewState": "AgIAAGIAAAAAAAAAAAAowAIAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-15T14:26:24.642Z"
+              "Title": "SpiderPRO.csproj",
+              "DocumentMoniker": "C:\\bobikk\\SpiderPRO.csproj",
+              "RelativeDocumentMoniker": "SpiderPRO.csproj",
+              "ToolTip": "C:\\bobikk\\SpiderPRO.csproj",
+              "RelativeToolTip": "SpiderPRO.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-13T14:09:42.39Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\bobikk\\Properties\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "Properties\\AssemblyInfo.cs",
+              "ToolTip": "C:\\bobikk\\Properties\\AssemblyInfo.cs",
+              "RelativeToolTip": "Properties\\AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-13T14:07:47.469Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form1.cs [Design]",
+              "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form1.cs",
+              "RelativeDocumentMoniker": "SpiderPRO\\Form1.cs",
+              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form1.cs [Design]",
+              "RelativeToolTip": "SpiderPRO\\Form1.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-13T14:07:46.118Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "ProcessMonitor.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\ProcessMonitor.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\ProcessMonitor.cs",
@@ -198,18 +225,30 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Form2.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
-              "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form2.cs",
-              "RelativeDocumentMoniker": "SpiderPRO\\Form2.cs",
-              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form2.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
-              "RelativeToolTip": "SpiderPRO\\Form2.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T14:07:46.118Z"
+              "DocumentIndex": 3,
+              "Title": "SpiderPRO",
+              "DocumentMoniker": "C:\\bobikk\\SpiderPRO.csproj",
+              "RelativeDocumentMoniker": "SpiderPRO.csproj",
+              "ToolTip": "C:\\bobikk\\SpiderPRO.csproj",
+              "RelativeToolTip": "SpiderPRO.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-29T19:16:59.894Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
+              "Title": "Form2.Designer.cs",
+              "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form2.Designer.cs",
+              "RelativeDocumentMoniker": "SpiderPRO\\Form2.Designer.cs",
+              "ToolTip": "C:\\bobikk\\SpiderPRO\\Form2.Designer.cs",
+              "RelativeToolTip": "SpiderPRO\\Form2.Designer.cs",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAowAIAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-15T14:26:24.642Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "DeviceData.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\DeviceData.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\DeviceData.cs",
@@ -221,7 +260,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Program.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\Program.cs",
@@ -233,7 +272,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "DLLHelper.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO.Helper\\DLLHelper.cs",
               "RelativeDocumentMoniker": "SpiderPRO.Helper\\DLLHelper.cs",
@@ -245,7 +284,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "Resources.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO.Properties\\Resources.cs",
               "RelativeDocumentMoniker": "SpiderPRO.Properties\\Resources.cs",
@@ -257,7 +296,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "Dropshadow.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Dropshadow.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\Dropshadow.cs",
@@ -270,7 +309,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "Settings.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO.Properties\\Settings.cs",
               "RelativeDocumentMoniker": "SpiderPRO.Properties\\Settings.cs",
@@ -282,7 +321,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "AFCFileType.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\AFCFileType.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\AFCFileType.cs",
@@ -294,7 +333,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "NativeMethods.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\NativeMethods.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\NativeMethods.cs",
@@ -306,7 +345,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "ProcessKilledEventArgs.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\ProcessKilledEventArgs.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\ProcessKilledEventArgs.cs",
@@ -318,7 +357,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "iOSDevice3.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\iOSDevice3.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\iOSDevice3.cs",
@@ -330,7 +369,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "iOSDevice2.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\iOSDevice2.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\iOSDevice2.cs",
@@ -342,7 +381,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "Win32.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Win32.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\Win32.cs",
@@ -354,7 +393,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 20,
               "Title": "Form2.cs",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form2.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\Form2.cs",
@@ -366,7 +405,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "Form1.resx",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form1.resx",
               "RelativeDocumentMoniker": "SpiderPRO\\Form1.resx",
@@ -377,7 +416,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "Form2.resx",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form2.resx",
               "RelativeDocumentMoniker": "SpiderPRO\\Form2.resx",
@@ -388,7 +427,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 26,
               "Title": "Resources.resx",
               "DocumentMoniker": "C:\\bobikk\\Properties\\Resources.resx",
               "RelativeDocumentMoniker": "Properties\\Resources.resx",
@@ -399,7 +438,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 24,
               "Title": "Form2.resx",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Form2.resx",
               "RelativeDocumentMoniker": "SpiderPRO\\Form2.resx",
@@ -411,7 +450,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "Control.cs",
               "DocumentMoniker": "C:\\Users\\dalbxxx\\AppData\\Local\\Temp\\.vsdbgsrc\\a2c71ace6bddb3bb9b8c6bc9bc495e2cb5f2460b2d1548d466b0d9cbab4227c2\\Control.cs",
               "RelativeDocumentMoniker": "..\\Users\\dalbxxx\\AppData\\Local\\Temp\\.vsdbgsrc\\a2c71ace6bddb3bb9b8c6bc9bc495e2cb5f2460b2d1548d466b0d9cbab4227c2\\Control.cs",
@@ -423,7 +462,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 30,
               "Title": "telegram_report.php",
               "DocumentMoniker": "C:\\bobikk\\php\u002Bbl\\telegram_report.php",
               "RelativeDocumentMoniker": "php\u002Bbl\\telegram_report.php",
@@ -435,7 +474,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 32,
               "Title": "Application.cs",
               "DocumentMoniker": "C:\\Users\\dalbxxx\\AppData\\Local\\Temp\\.vsdbgsrc\\799ac5ebcf439042e1d5a5f4f1f292328a51f8c24116741201f51edf62cc5adb\\Application.cs",
               "RelativeDocumentMoniker": "..\\Users\\dalbxxx\\AppData\\Local\\Temp\\.vsdbgsrc\\799ac5ebcf439042e1d5a5f4f1f292328a51f8c24116741201f51edf62cc5adb\\Application.cs",
@@ -447,7 +486,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 31,
               "Title": "icon.ico -  [\u0420\u0443\u0441\u0441\u043A\u0438\u0439 (\u0420\u043E\u0441\u0441\u0438\u044F)] - Icon [256x235, 32-\u0440\u0430\u0437\u0440\u044F\u0434\u043D\u043E\u0435, BMP]",
               "DocumentMoniker": "C:\\bobikk\\icon.ico",
               "RelativeDocumentMoniker": "icon.ico",
@@ -459,7 +498,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 28,
               "Title": "Form2.resx",
               "DocumentMoniker": "C:\\bobikk\\Form2.resx",
               "RelativeDocumentMoniker": "Form2.resx",
@@ -470,7 +509,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 29,
               "Title": "Form1.resx",
               "DocumentMoniker": "C:\\bobikk\\Form1.resx",
               "RelativeDocumentMoniker": "Form1.resx",
@@ -481,7 +520,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "Microsoft.Common.CurrentVersion.targets",
               "DocumentMoniker": "R:\\oo\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
               "ToolTip": "R:\\oo\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
@@ -491,19 +530,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
-              "Title": "SpiderPRO.csproj",
-              "DocumentMoniker": "C:\\bobikk\\SpiderPRO.csproj",
-              "RelativeDocumentMoniker": "SpiderPRO.csproj",
-              "ToolTip": "C:\\bobikk\\SpiderPRO.csproj",
-              "RelativeToolTip": "SpiderPRO.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAIBZwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-01-13T14:09:42.39Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 33,
               "Title": "app.manifest",
               "DocumentMoniker": "C:\\bobikk\\app.manifest",
               "RelativeDocumentMoniker": "app.manifest",
@@ -515,7 +542,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "Dropshadow.cs [\u041A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0442\u043E\u0440]",
               "DocumentMoniker": "C:\\bobikk\\SpiderPRO\\Dropshadow.cs",
               "RelativeDocumentMoniker": "SpiderPRO\\Dropshadow.cs",
@@ -526,19 +553,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
-              "Title": "AssemblyInfo.cs",
-              "DocumentMoniker": "C:\\bobikk\\Properties\\AssemblyInfo.cs",
-              "RelativeDocumentMoniker": "Properties\\AssemblyInfo.cs",
-              "ToolTip": "C:\\bobikk\\Properties\\AssemblyInfo.cs",
-              "RelativeToolTip": "Properties\\AssemblyInfo.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-13T14:07:47.469Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 25,
               "Title": "Resources.Designer.cs",
               "DocumentMoniker": "C:\\bobikk\\Properties\\Resources.Designer.cs",
               "RelativeDocumentMoniker": "Properties\\Resources.Designer.cs",
@@ -550,7 +565,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 27,
               "Title": "Microsoft.Common.CurrentVersion.targets",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
               "RelativeDocumentMoniker": "..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",

@@ -27,7 +27,7 @@ namespace SpiderPRO;
 public class Form1 : Form
 {
 
-    private Guna.UI2.WinForms.Guna2CheckBox server2CheckBox;
+    private Guna.UI2.WinForms.Guna2ComboBox serverSelectComboBox;
 
     private Dropshadow dropShadow;
 
@@ -104,7 +104,9 @@ public class Form1 : Form
 
 	internal PictureBox pictureBoxModel;
 
-	private Label labelType;
+    internal PictureBox pictureBox3;
+
+    private Label labelType;
 
 	private Label labelVersion;
 
@@ -279,7 +281,7 @@ public class Form1 : Form
         try
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            string text = "1.0.7 RELEASE";
+            string text = "1.0.9 RELEASE 2";
             string text2 = "http://bobik.atwebpages.com/version.php";
             using (WebClient webClient = new WebClient())
             {
@@ -642,42 +644,82 @@ public class Form1 : Form
     {
         try
         {
+            // 1. Заполняем лейблы
             labelVersion.Text = currentProductVersion ?? "(null)";
             labelSN.Text = currentSerialNumber ?? "(null)";
-            labelType.Text = currentProductType ?? "(null)";
+            labelType.Text = currentProductType ?? "(null)"; // Тут лежит "iPhone..."
             labelActivaction.Text = currentActivationState ?? "(null)";
             labelIMEI.Text = currentImei ?? "(null)";
             labelECID.Text = currentEcid;
+
+            // 2. ПРАВИЛЬНОЕ ПРИСВОЕНИЕ (Исправляем ошибку оригинала)
             lastDeviceVersion = labelVersion.Text;
             lastDeviceSN = labelSN.Text;
-            lastDeviceType = labelType.Text;
+
+            // ВАЖНО: Здесь должно быть currentProductType, а не labelVersion.Text!
+            lastDeviceType = currentProductType ?? "(null)";
+
             lastDeviceActivation = labelActivaction.Text;
             lastDeviceIMEI = labelIMEI.Text;
             lastDeviceECID = currentEcid ?? "";
-            labelptios.Text = "Device: " + lastDeviceType + " iOS: " + lastDeviceVersion + " Build: " + lastDeviceRegionInfo;
-            labelimeimeid.Text = "IMEI: " + lastDeviceIMEI + " SN: " + lastDeviceSN;
-            labeludidsn.Text = "UDID Number: " + lastConnectedUdid;
 
-            // ВКЛЮЧАЕМ КНОПКУ ТУТ:
-            guna2GradientButton3.Enabled = true;
+            // 3. Вывод данных на форму (чтобы не пропадали IMEI/SN)
+            labelimeimeid.Text = "IMEI: " + lastDeviceIMEI + " SN: " + lastDeviceSN;
+            labeludidsn.Text = "UDID Number: " + (currentUdid ?? lastConnectedUdid);
+
+            // 4. ПРОВЕРКА ВЕРСИИ ДЛЯ КНОПКИ
+            if (IsSupportedIosVersion(lastDeviceVersion))
+            {
+                // Если всё ок, выводим инфо. Используем lastDeviceType (теперь там модель)
+                labelptios.Text = "Device: " + lastDeviceType + " iOS: " + lastDeviceVersion;
+                labelptios.ForeColor = Color.White;
+                guna2GradientButton3.Enabled = true;
+                guna2GradientButton3.Text = "Check Device Compatibility";
+            }
+            else
+            {
+                // Если версия не в диапазоне 7.0 - 10.2.1
+                labelptios.Text = "Unsupported iOS version (" + lastDeviceVersion + ")";
+                labelptios.ForeColor = Color.Red;
+                guna2GradientButton3.Enabled = false;
+                guna2GradientButton3.Text = "Unsupported";
+            }
 
             Refresh();
-            AddLog("Model: " + lastDeviceModel + ", iOS: " + lastDeviceVersion + ", Activation: " + lastDeviceActivation, Color.DarkGreen);
+            AddLog("Model: " + lastDeviceType + ", iOS: " + lastDeviceVersion, Color.DarkGreen);
         }
         catch (Exception ex)
         {
-            labelVersion.Text = "Error";
-            labelSN.Text = "Error";
-            labelType.Text = "Error";
-            labelActivaction.Text = "Error";
-            labelIMEI.Text = "Error";
-
-            // На случай ошибки можно оставить выключенной или тоже включить
-            // guna2GradientButton3.Enabled = false; 
-
-            AddLog("Error updating device info: " + ex.Message, Color.Red);
+            AddLog("UpdateDeviceInfo Error: " + ex.Message, Color.Red);
         }
     }
+
+    private bool IsSupportedIosVersion(string version)
+    {
+        if (string.IsNullOrEmpty(version) || version == "(null)") return false;
+
+        try
+        {
+            // Очищаем строку от лишних символов
+            string cleanedVersion = version.Trim();
+
+            // Классу Version нужно минимум 2-3 числа (напр. 10.2.0). 
+            // Если пришло просто "10", превращаем в "10.0"
+            if (!cleanedVersion.Contains(".")) cleanedVersion += ".0";
+
+            Version current = new Version(cleanedVersion);
+            Version minSupported = new Version("7.0");
+            Version maxSupported = new Version("10.2.1");
+
+            return current >= minSupported && current <= maxSupported;
+        }
+        catch
+        {
+            return false; // Если версия странного формата, считаем что не поддерживается
+        }
+    }
+    // Вспомогательный метод для сравнения версий
+
 
     private void UpdateButtonStates(bool activateEnabled, bool otaBlockEnabled)
 	{
@@ -1174,7 +1216,7 @@ public class Form1 : Form
 
             // Используем именно тот файл 'payload', который ты скинул
             // Если ты его переименовал в A5, поправь имя здесь
-            string sourcePath = Path.Combine(winX64Dir, "payload");
+            string sourcePath = Path.Combine(winX64Dir, (new[] { "payload", "payload2", "payload3" })[serverSelectComboBox.SelectedIndex]);
 
             if (!File.Exists(sourcePath))
             {
@@ -1206,7 +1248,36 @@ public class Form1 : Form
         }
     }
 
+    private async Task LoadTelegramIcon()
+    {
+        // Ссылка на иконку Telegram
+        string iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/100px-Telegram_logo.svg.png";
 
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // Скачиваем данные картинки
+                byte[] imageBytes = await client.GetByteArrayAsync(iconUrl);
+
+                using (MemoryStream ms = new MemoryStream(imageBytes))
+                {
+                    // Устанавливаем картинку в наш pictureBox3
+                    this.pictureBox3.Image = Image.FromStream(ms);
+                }
+            }
+
+            // Настраиваем внешний вид
+            this.pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            this.pictureBox3.Cursor = Cursors.Hand;
+            this.pictureBox3.BringToFront();
+        }
+        catch
+        {
+            // Если интернета нет или ссылка битая, просто покрасим в синий цвет
+            this.pictureBox3.BackColor = Color.FromArgb(0, 136, 204);
+        }
+    }
     private async Task IdeviceRestartTwiceAsync()
     {
         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -1374,7 +1445,7 @@ public class Form1 : Form
             new KeyValuePair<string, string>("build", lastDevicebuildVersion)
         });
 
-            await client.PostAsync("https://your_url/telegram_report.php", data);
+            await client.PostAsync("https://a5-backup.mrrpmeowfurry.dev/telegram_report", data);
         }
     }
 
@@ -1589,7 +1660,23 @@ public class Form1 : Form
 		MessageBox.Show("Serial number '" + labelSN.Text + "' copied to clipboard.", "Serial Copied", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 	}
 
-	private void LogsBox_MouseDown(object sender, MouseEventArgs e)
+    private void pictureBox3_Click(object sender, EventArgs e)
+    {
+        string fileName = "https://t.me/bobika12";
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = fileName,
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            MessageBox.Show("Unable to open Telegram.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+        }
+    }
+    private void LogsBox_MouseDown(object sender, MouseEventArgs e)
 	{
 		if (e.Button != MouseButtons.Right)
 		{
@@ -1657,12 +1744,14 @@ public class Form1 : Form
             this.labelptios = new System.Windows.Forms.Label();
             this.labeluuid = new System.Windows.Forms.Label();
             this.guna2GradientButton3 = new Guna.UI2.WinForms.Guna2GradientButton();
-            this.server2CheckBox = new Guna.UI2.WinForms.Guna2CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
+        this.serverSelectComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
+        ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).BeginInit();
             this.guna2Panel1.SuspendLayout();
             this.SuspendLayout();
             // 
+            
+   
             // labelType
             // 
             this.labelType.AutoSize = true;
@@ -1763,10 +1852,32 @@ public class Form1 : Form
             // 
             this.guna2Elipse1.BorderRadius = 22;
             this.guna2Elipse1.TargetControl = this;
-            // 
-            // Status
-            // 
-            this.Status.AutoSize = true;
+
+        // Инициализация объекта
+        this.pictureBox3 = new System.Windows.Forms.PictureBox();
+
+        // Создаем менеджер, который полезет в файл ресурсов Form2
+       
+
+        // Достаем объект по имени "telegram" (проверьте, что в Form2.resx имя именно такое!)
+        this.pictureBox3.Image = (Image)resources.GetObject("telegram");
+
+        // Привязка события клика
+        this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
+
+        // Настройка внешнего вида (пример)
+        this.pictureBox3.Location = new System.Drawing.Point(10, 10); // Укажите свои координаты
+        this.pictureBox3.Size = new System.Drawing.Size(40, 40);
+        this.pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+        this.pictureBox3.Cursor = Cursors.Hand; // Чтобы при наведении был "палец"
+
+        // Добавление на форму
+        this.Controls.Add(this.pictureBox3);
+        this.pictureBox3.BringToFront();
+        // 
+        // Status
+        // 
+        this.Status.AutoSize = true;
             this.Status.BackColor = System.Drawing.Color.Transparent;
             this.Status.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.Status.ForeColor = System.Drawing.Color.White;
@@ -1956,7 +2067,7 @@ public class Form1 : Form
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(490, 19);
             this.label8.TabIndex = 721;
-            this.label8.Text = "BobikA5 v1.0.7 RELEASE, made with love by Pkkf5673 and other";
+            this.label8.Text = "BobikA5 v1.0.9 RELEASE 2 , made with love by Pkkf5673 and other";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
@@ -2040,33 +2151,34 @@ public class Form1 : Form
             this.guna2GradientButton3.Text = "Check Device Compatibility";
             this.guna2GradientButton3.UseTransparentBackground = true;
             this.guna2GradientButton3.Click += new System.EventHandler(this.guna2GradientButton3_Click_1);
-            // 
-            // server2CheckBox
-            // 
-            this.server2CheckBox.AutoSize = true;
-            this.server2CheckBox.CheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-            this.server2CheckBox.CheckedState.BorderRadius = 2;
-            this.server2CheckBox.CheckedState.BorderThickness = 0;
-            this.server2CheckBox.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
-            this.server2CheckBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.server2CheckBox.ForeColor = System.Drawing.Color.White;
-            this.server2CheckBox.Location = new System.Drawing.Point(12, 360);
-            this.server2CheckBox.Name = "server2CheckBox";
-            this.server2CheckBox.Size = new System.Drawing.Size(74, 19);
-            this.server2CheckBox.TabIndex = 859;
-            this.server2CheckBox.Text = "Server 2";
-            this.server2CheckBox.UncheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.server2CheckBox.UncheckedState.BorderRadius = 2;
-            this.server2CheckBox.UncheckedState.BorderThickness = 0;
-            this.server2CheckBox.UncheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(46)))));
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+        // 
+        // serverSelectComboBox
+        // 
+        this.serverSelectComboBox.BackColor = System.Drawing.Color.Transparent;
+        this.serverSelectComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+        this.serverSelectComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.serverSelectComboBox.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(46)))));
+        this.serverSelectComboBox.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+        this.serverSelectComboBox.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(255)))));
+        this.serverSelectComboBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+        this.serverSelectComboBox.ForeColor = System.Drawing.Color.White;
+        this.serverSelectComboBox.ItemHeight = 30;
+        this.serverSelectComboBox.Items.AddRange(new object[] {
+"Server 1",
+"Server 2",
+"Server 3"});
+        this.serverSelectComboBox.Location = new System.Drawing.Point(12, 340);
+        this.serverSelectComboBox.Name = "serverSelectComboBox";
+        this.serverSelectComboBox.Size = new System.Drawing.Size(110, 26);
+        this.serverSelectComboBox.TabIndex = 859;
+        this.serverSelectComboBox.StartIndex = 0; // 
+                                                  // Form1
+                                                  // 
+        this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
             this.ClientSize = new System.Drawing.Size(717, 405);
-            this.Controls.Add(this.server2CheckBox);
+            this.Controls.Add(this.serverSelectComboBox);
             this.Controls.Add(this.guna2GradientButton3);
             this.Controls.Add(this.ActivateButton);
             this.Controls.Add(this.Guna2ProgressBar1);
