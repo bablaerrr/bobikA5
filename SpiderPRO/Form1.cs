@@ -58,6 +58,10 @@ public class Form1 : Form
 
     private Guna.UI2.WinForms.Guna2CheckBox chkDisableReboot;
 
+    private Guna2GradientButton btnAlreadyBooted;
+
+    private bool _skipCountdown = false;
+
     private string currentProductType = "";
 
 	private string currentProductVersion = "";
@@ -1398,19 +1402,49 @@ public class Form1 : Form
             this.pictureBox3.BackColor = Color.FromArgb(0, 136, 204);
         }
     }
+    private bool IsA8Device()
+    {
+        string[] a8Models = { "iPhone7,1", "iPhone7,2", "iPod7,1", "iPad5,1", "iPad5,2", "iPad5,3", "iPad5,4" };
+        return Array.IndexOf(a8Models, currentProductType) >= 0;
+    }
+
+    private bool IsA8WithIos103()
+    {
+        if (!IsA8Device()) return false;
+        if (!Version.TryParse(lastDeviceVersion, out Version ver)) return false;
+        return ver >= new Version("10.3") && ver <= new Version("10.3.4");
+    }
+
+    private void ShowAlreadyBootedButton(bool show)
+    {
+        if (btnAlreadyBooted.InvokeRequired)
+            btnAlreadyBooted.Invoke(new Action<bool>(ShowAlreadyBootedButton), show);
+        else
+            btnAlreadyBooted.Visible = show;
+    }
+
+    private void btnAlreadyBooted_Click(object sender, EventArgs e)
+    {
+        _skipCountdown = true;
+        btnAlreadyBooted.Visible = false;
+    }
+
     private async Task IdeviceRestartTwiceAsync()
     {
         string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         string toolPath = Path.Combine(baseDir, "win-x64", "idevicediagnostics.exe");
         string cmd = "\"" + toolPath + "\" restart";
+        int waitSeconds = IsA8WithIos103() ? 420 : 90;
+        if (waitSeconds == 420)
+            AddLog("A8 + iOS 10.3.x detected: extending reboot wait to 7 minutes", Color.Orange);
         if ((await RunCommandAsyncReturn(cmd)).Contains("Restarting device"))
         {
             UpdateUIProgress(60, "", "[1] Restarting your device, please wait...");
-            await CountdownAsync(90);
+            await CountdownAsync(waitSeconds);
             if ((await RunCommandAsyncReturn(cmd)).Contains("Restarting device"))
             {
                 UpdateUIProgress(60, "", "[2] Restarting your device, please wait...");
-                await CountdownAsync(90);
+                await CountdownAsync(waitSeconds, showAlreadyBooted: true);
                 UpdateUIProgress(80, "", "Checking activation status, please wait...");
                 await IdeviceMobileGestaltAsyncH("hactivation");
             }
@@ -1425,14 +1459,17 @@ public class Form1 : Form
         }
     }
 
-    public async Task CountdownAsync(int seconds)
+    public async Task CountdownAsync(int seconds, bool showAlreadyBooted = false)
     {
+        _skipCountdown = false;
+        if (showAlreadyBooted) ShowAlreadyBootedButton(true);
         for (int i = seconds; i >= 0; i--)
         {
-            string Text = $"Please wait for reboot after: {i} seconds";
+            if (_skipCountdown) break;
             UpdateUIProgress(60, "", $"Please wait for reboot after: {i} seconds");
             await Task.Delay(1000);
         }
+        ShowAlreadyBootedButton(false);
         UpdateUIProgress(70, "", "Restarting your device is Completed now...");
     }
 
@@ -1884,6 +1921,7 @@ public class Form1 : Form
             this.guna2GradientButton3 = new Guna.UI2.WinForms.Guna2GradientButton();
             this.serverSelectComboBox = new Guna.UI2.WinForms.Guna2ComboBox();
             this.chkDisableReboot = new Guna.UI2.WinForms.Guna2CheckBox();
+            this.btnAlreadyBooted = new Guna.UI2.WinForms.Guna2GradientButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxModel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDC)).BeginInit();
             this.guna2Panel1.SuspendLayout();
@@ -2320,13 +2358,38 @@ public class Form1 : Form
             this.chkDisableReboot.UncheckedState.BorderRadius = 0;
             this.chkDisableReboot.UncheckedState.BorderThickness = 0;
             this.chkDisableReboot.UseVisualStyleBackColor = true;
-            // 
+            //
+            // btnAlreadyBooted
+            //
+            this.btnAlreadyBooted.Animated = true;
+            this.btnAlreadyBooted.BackColor = System.Drawing.Color.Transparent;
+            this.btnAlreadyBooted.BorderRadius = 10;
+            this.btnAlreadyBooted.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAlreadyBooted.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnAlreadyBooted.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnAlreadyBooted.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnAlreadyBooted.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(199)))), ((int)(((byte)(89)))));
+            this.btnAlreadyBooted.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(160)))), ((int)(((byte)(70)))));
+            this.btnAlreadyBooted.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.btnAlreadyBooted.ForeColor = System.Drawing.Color.White;
+            this.btnAlreadyBooted.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.btnAlreadyBooted.IndicateFocus = true;
+            this.btnAlreadyBooted.Location = new System.Drawing.Point(331, 308);
+            this.btnAlreadyBooted.Name = "btnAlreadyBooted";
+            this.btnAlreadyBooted.Size = new System.Drawing.Size(371, 22);
+            this.btnAlreadyBooted.TabIndex = 860;
+            this.btnAlreadyBooted.Text = "Already Booted";
+            this.btnAlreadyBooted.UseTransparentBackground = true;
+            this.btnAlreadyBooted.Visible = false;
+            this.btnAlreadyBooted.Click += new System.EventHandler(this.btnAlreadyBooted_Click);
+            //
             // Form1
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
             this.ClientSize = new System.Drawing.Size(717, 405);
+            this.Controls.Add(this.btnAlreadyBooted);
             this.Controls.Add(this.chkDisableReboot);
             this.Controls.Add(this.serverSelectComboBox);
             this.Controls.Add(this.guna2GradientButton3);
